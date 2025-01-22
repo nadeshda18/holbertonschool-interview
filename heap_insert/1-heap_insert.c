@@ -8,10 +8,10 @@
  */
 size_t binary_tree_size(const binary_tree_t *tree)
 {
-    if (tree == NULL)
-        return (0);
+	if (tree == NULL)
+		return (0);
 
-    return (1 + binary_tree_size(tree->left) + binary_tree_size(tree->right));
+	return (1 + binary_tree_size(tree->left) + binary_tree_size(tree->right));
 }
 
 /**
@@ -22,13 +22,13 @@ size_t binary_tree_size(const binary_tree_t *tree)
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-    if (tree == NULL)
-        return (0);
+	if (tree == NULL)
+		return (0);
 
-    if (binary_tree_size(tree->left) == binary_tree_size(tree->right))
-        return (1);
+	if (binary_tree_size(tree->left) == binary_tree_size(tree->right))
+		return (1);
 
-    return (0);
+	return (0);
 }
 
 /**
@@ -39,17 +39,17 @@ int binary_tree_is_perfect(const binary_tree_t *tree)
  */
 heap_t *heapify_up(heap_t *node)
 {
-    int temp;
+	int temp;
 
-    while (node->parent && node->n > node->parent->n)
-    {
-        temp = node->n;
-        node->n = node->parent->n;
-        node->parent->n = temp;
-        node = node->parent;
-    }
+	while (node->parent && node->n > node->parent->n)
+	{
+		temp = node->n;
+		node->n = node->parent->n;
+		node->parent->n = temp;
+		node = node->parent;
+	}
 
-    return (node);
+	return (node);
 }
 
 /**
@@ -61,30 +61,32 @@ heap_t *heapify_up(heap_t *node)
  */
 heap_t *insert_node(heap_t **root, heap_t *node)
 {
-    heap_t *parent;
-    size_t size;
-    size_t i;
+	heap_t *parent;
+	size_t size;
+	size_t i;
 
-    if (*root == NULL)
-    {
-        *root = node;
-        return (node);
-    }
+	if (*root == NULL)
+	{
+		*root = node;
+		return (node);
+	}
 
-    size = binary_tree_size(*root);
-    parent = *root;
+	size = binary_tree_size(*root);
+	parent = *root;
 
-    for (i = 1 << (sizeof(size_t) * 8 - __builtin_clz(size + 1) - 2); i > 1; i >>= 1)
-        parent = (size + 1) & i ? parent->right : parent->left;
+	for (i = 1 << (sizeof(size_t) * 8 - __builtin_clz(size + 1) - 2);
+		i > 1;
+		i >>= 1)
+		parent = (size + 1) & i ? parent->right : parent->left;
 
-    if (parent->left == NULL)
-        parent->left = node;
-    else
-        parent->right = node;
+	if (parent->left == NULL)
+		parent->left = node;
+	else
+		parent->right = node;
 
-    node->parent = parent;
+	node->parent = parent;
 
-    return (heapify_up(node));
+	return (heapify_up(node));
 }
 
 /**
@@ -96,11 +98,11 @@ heap_t *insert_node(heap_t **root, heap_t *node)
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-    heap_t *new_node;
+	heap_t *new_node;
 
-    new_node = binary_tree_node(NULL, value);
-    if (new_node == NULL)
-        return (NULL);
+	new_node = binary_tree_node(NULL, value);
+	if (new_node == NULL)
+		return (NULL);
 
-    return (insert_node(root, new_node));
+	return (insert_node(root, new_node));
 }
