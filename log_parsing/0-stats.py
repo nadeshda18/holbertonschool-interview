@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Log parsing"""
+"""reads stdin line by line and computes metrics"""
 import sys
 import signal
 
