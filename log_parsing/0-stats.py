@@ -1,5 +1,9 @@
 #!/usr/bin/python3
-"""reads stdin line by line and computes metrics"""
+"""reads stdin line by line and computes metrics
+Input format: <IP Address> - [<date>] "GET /projects/260
+HTTP/1.1" <status code> <file size>"
+After every 10 lines and/or a keyboard interruption (CTRL + C),
+prints these statistics from the beginning:"""
 import sys
 import signal
 
