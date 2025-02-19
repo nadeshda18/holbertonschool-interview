@@ -1,46 +1,48 @@
 #!/usr/bin/python3
-"""reads stdin line by line and computes metrics
-Input format: <IP Address> - [<date>] "GET /projects/260
-HTTP/1.1" <status code> <file size>"
-After every 10 lines and/or a keyboard interruption (CTRL + C),
-prints these statistics from the beginning:"""
-import sys
-import signal
+"""
+Reads stdin line by line and computes metrics
+"""
 
+from sys import stdin
 
-def print_stats(total_size, status_codes):
-    """Prints the statistics"""
-    print("File size: {:d}".format(total_size))
-    for key in sorted(status_codes.keys()):
-        print("{:d}: {:d}".format(key, status_codes[key]))
+if __name__ == "__main__":
+    total_size = 0
+    status_codes = {}
+    list_status_codes = [
+            "200", "301", "400", "401", "403", "404", "405", "500"]
+    for status in list_status_codes:
+        status_codes[status] = 0
+    count = 0
+    try:
+        for line in stdin:
+            try:
+                args = line.split(" ")
+                if len(args) != 9:
+                    pass
+                if args[-2] in list_status_codes:
+                    status_codes[args[-2]] += 1
+                if args[-1][-1] == '\n':
+                    args[-1][:-1]
+                total_size += int(args[-1])
+            except (IndexError, ValueError):
+                pass
+            count += 1
+            if count % 10 == 0:
+                print("File size: {}".format(total_size))
+                for status in sorted(status_codes.keys()):
+                    if status_codes[status] != 0:
+                        print("{}: {}".format(
+                            status, status_codes[status]))
+        print("File size: {}".format(total_size))
+        for status in sorted(status_codes.keys()):
+            if status_codes[status] != 0:
+                print("{}: {}".format(status, status_codes[status]))
+    except KeyboardInterrupt as err:
+        print("File size: {}".format(total_size))
+        for status in sorted(status_codes.keys()):
+            if status_codes[status] != 0:
+                print("{}: {}".format(status, status_codes[status]))
+        raise
 
-
-def signal_handler(sig, frame):
-    """Handles the SIGINT signal"""
-    print()
-    sys.exit(0)
-
-
-signal.signal(signal.SIGINT, signal_handler)
-
-total_size = 0
-status_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0}
-counter = 0
-
-try:
-    for line in sys.stdin:
-        counter += 1
-        try:
-            words = line.split()
-            total_size += int(words[-1])
-            status_codes[int(words[-2])] += 1
-        except Exception:
-            pass
-        if counter == 10:
-            print_stats(total_size, status_codes)
-            counter = 0
-except KeyboardInterrupt:
-    print_stats(total_size, status_codes)
-    raise
-
-print_stats(total_size, status_codes)
+if __name__ == "__main__":
+    main()
