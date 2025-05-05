@@ -1,48 +1,55 @@
 #include "search_algos.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 /**
- * advanced_binary - Searches for a value in a sorted array of integers
- * using the Advanced Binary Search algorithm
- *
- * @array: Pointer to the first element of the array to search in
- * @size: Number of elements in the array
- * @value: Value to search for
- *
- * Return: The index where value is located, or -1 if not found
+ * advanced_binary - Entry point to search for first occurrence of value
+ * @array: Pointer to array
+ * @size: Size of array
+ * @value: Value to search
+ * Return: Index or -1
  */
 int advanced_binary(int *array, size_t size, int value)
 {
-size_t mid, i;
-int result;
-
 if (array == NULL || size == 0)
 return (-1);
 
-printf("Searching in array: ");
-for (i = 0; i < size; i++)
+return (recursive_binary(array, 0, (int)size - 1, value));
+}
+
+/**
+ * recursive_binary - Recursively searches for first occurrence
+ * @array: Pointer to full array
+ * @left: Left index
+ * @right: Right index
+ * @value: Target value
+ * Return: Index or -1
+ */
+int recursive_binary(int *array, int left, int right, int value)
 {
-if (i > 0)
+int i, mid;
+
+if (left > right)
+return (-1);
+
+printf("Searching in array: ");
+for (i = left; i <= right; i++)
+{
+if (i > left)
 printf(", ");
 printf("%d", array[i]);
 }
 printf("\n");
 
-mid = size / 2;
+mid = left + (right - left) / 2;
 
-/* Check if the middle element is the first occurrence of the value */
-if (array[mid] == value && (mid == 0 || array[mid - 1] != value))
+if (array[mid] == value)
+{
+if (mid == left || array[mid - 1] != value)
 return (mid);
-
-/* Search in the left half if the value is less than or equal to array[mid] */
-if (array[mid] >= value)
-return (advanced_binary(array, mid, value));
-
-/* Search in the right half */
-result = advanced_binary(array + mid + 1, size - mid - 1, value);
-if (result != -1)
-return (mid + 1 + result);
-
-return (-1);
+return (recursive_binary(array, left, mid, value));
+}
+else if (array[mid] > value)
+return (recursive_binary(array, left, mid - 1, value));
+else
+return (recursive_binary(array, mid + 1, right, value));
 }
