@@ -31,15 +31,18 @@ printf("\n");
 
 mid = size / 2;
 
+/* Check if the middle element is the first occurrence of the value */
 if (array[mid] == value && (mid == 0 || array[mid - 1] != value))
 return (mid);
-else if (array[mid] >= value)
+
+/* Search in the left half if the value is less than or equal to array[mid] */
+if (array[mid] >= value)
 return (advanced_binary(array, mid, value));
-else
-{
+
+/* Search in the right half */
 result = advanced_binary(array + mid + 1, size - mid - 1, value);
 if (result != -1)
 return (mid + 1 + result);
+
 return (-1);
-}
 }
